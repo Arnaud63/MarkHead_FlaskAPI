@@ -35,34 +35,35 @@ def analyse_image():
     if request.method == "POST":
         if request.files:
             image = request.files["image"]
-            #app.logger.debug("image_name : ", image.filename)
+            if image :
+                #app.logger.debug("image_name : ", image.filename)
 
-            image.save(os.path.join(app.config["IMAGE_UPLOADS"], image.filename))
+                image.save(os.path.join(app.config["IMAGE_UPLOADS"], image.filename))
 
-            app.logger.debug("OK save")
+                app.logger.debug("OK save")
 
-            #img = cv2.imread(os.path.join(app.config["IMAGE_UPLOADS"], image.filename))
+                #img = cv2.imread(os.path.join(app.config["IMAGE_UPLOADS"], image.filename))
 
-            #app.logger.debug("OK cv2")
-            #app.logger.debug("type(img) :", type(img))
-            #app.logger.debug("img.shape :", str(img.shape))
+                #app.logger.debug("OK cv2")
+                #app.logger.debug("type(img) :", type(img))
+                #app.logger.debug("img.shape :", str(img.shape))
 
-            #imagenp = np.fromstring(imagestr, np.uint8)
+                #imagenp = np.fromstring(imagestr, np.uint8)
 
-            try:
-                aligned_face=DeepFace.detectFace(os.path.join(app.config["IMAGE_UPLOADS"], image.filename), detector_backend=backends[1])
-                success=True
-            except ValueError as e:
-                print(e)
-                print("No face found")
-                success=False
+                try:
+                    aligned_face=DeepFace.detectFace(os.path.join(app.config["IMAGE_UPLOADS"], image.filename), detector_backend=backends[1])
+                    success=True
+                except ValueError as e:
+                    print(e)
+                    print("No face found")
+                    success=False
 
-            if success:
-                print(type(aligned_face))
-                plt.imsave(os.path.join(app.config["ALIGNED_FACES"], image.filename), aligned_face)
-                #cv2.imwrite(os.path.join(app.config["ALIGNED_FACES"], image.filename), aligned_face)
-                return render_template("analyse_image.html", title="Analysing an image", img_path=os.path.join("static/img/aligned_faces", image.filename))
-            else:
-                return redirect(request.url)
+                if success:
+                    print(type(aligned_face))
+                    plt.imsave(os.path.join(app.config["ALIGNED_FACES"], image.filename), aligned_face)
+                    #cv2.imwrite(os.path.join(app.config["ALIGNED_FACES"], image.filename), aligned_face)
+                    return render_template("analyse_image.html", title="Analysing an image", img_path=os.path.join("static/img/aligned_faces", image.filename))
+                else:
+                    return redirect(request.url)
             
     return render_template("analyse_image.html", title="Analysing an image")

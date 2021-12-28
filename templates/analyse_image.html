@@ -2,7 +2,6 @@
 
 {% block content %}
   <div class="container">
-      <p>This is an example paragraph. Anything in the <strong>body</strong> tag will appear on the page, just like this <strong>p</strong> tag and its contents.</p>
       <div>
       <h1>Analyse an image</h1>
       <form action="/analyse-image" method="POST" enctype="multipart/form-data">
@@ -13,7 +12,7 @@
               <label class="custom-file-label" for="image">Select image...</label>
           </div>
           </div>
-          <button type="SUBMIT" class="btn btn-primary">Upload image</button>
+          <button type="SUBMIT" class="btn" style="background-color: coral;">Upload image</button>
       </form>
       {% if img_path %}
         <h2>Results</h2>
