@@ -15,6 +15,10 @@
           </div>
           <button type="SUBMIT" class="btn btn-primary">Upload image</button>
       </form>
+      {% if img_path %}
+        <h2>Results</h2>
+        <img src={{ img_path }} alt="Aligned image"/>
+      {% endif %}
       </div>
   </div>
 {% endblock %}

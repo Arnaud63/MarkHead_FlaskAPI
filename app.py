@@ -61,7 +61,8 @@ def analyse_image():
                 print(type(aligned_face))
                 plt.imsave(os.path.join(app.config["ALIGNED_FACES"], image.filename), aligned_face)
                 #cv2.imwrite(os.path.join(app.config["ALIGNED_FACES"], image.filename), aligned_face)
-
-            return redirect(request.url)
+                return render_template("analyse_image.html", title="Analysing an image", img_path=os.path.join("static/img/aligned_faces", image.filename))
+            else:
+                return redirect(request.url)
             
     return render_template("analyse_image.html", title="Analysing an image")
