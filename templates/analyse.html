@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+      <div>
+      <h1>Analyse</h1>
+      <form action="/analyse" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+          <label>Select image</label>
+          <div class="custom-file">
+              <input type="FILE" class="custom-file-input" name="image">
+              <label class="custom-file-label" for="image">Select image...</label>
+          </div>
+          </div>
+          <button type="SUBMIT" class="btn" style="background-color: coral;">Upload image</button>
+      </form>
+      {% if img_path %}
+        <h2>Results</h2>
+        <img src={{ img_path }} alt="Aligned image"/>
+      {% endif %}
+      </div>
+  </div>
+{% endblock %}

@@ -1,16 +1,21 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from deepface import DeepFace
 import numpy as np
 import cv2
 import os
 import matplotlib.pyplot as plt
+import notation as nt
 
 app = Flask(__name__)
-app.config["IMAGE_UPLOADS"] = "/home/arnaud/Documents/MarkHead_FlaskAPI/static/img/uploads/"
-app.config["ALIGNED_FACES"] = "/home/arnaud/Documents/MarkHead_FlaskAPI/static/img/aligned_faces/"
+#app.config["IMAGE_UPLOADS"] = "/home/arnaud/Documents/MarkHead_FlaskAPI/static/img/uploads/"
+app.config["IMAGE_UPLOADS"] = os.getcwd()+"/static/img/uploads"
+#app.config["ALIGNED_FACES"] = "/home/arnaud/Documents/MarkHead_FlaskAPI/static/img/aligned_faces/"
+app.config["ALIGNED_FACES"] = os.getcwd()+"/static/img/aligned_faces"
+
 
 #Global variable for DeepFace : every detection algorithms
 backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface']
+facial_attributes = ['age', 'gender', 'race', 'emotion']
 
 @app.route("/")
 def index():
@@ -67,3 +72,38 @@ def analyse_image():
                     return redirect(request.url)
             
     return render_template("analyse_image.html", title="Analysing an image")
+
+@app.route("/analyse", methods=["GET", "POST"])
+def analyse():
+    if request.method == "POST":
+        if request.files:
+            image = next(request.files.values())
+            if image :
+                #app.logger.debug("image_name : ", image.filename)
+
+                image.save(os.path.join(app.config["IMAGE_UPLOADS"], image.filename))
+
+                app.logger.debug("OK save")
+
+                #img = cv2.imread(os.path.join(app.config["IMAGE_UPLOADS"], image.filename))
+
+                #app.logger.debug("OK cv2")
+                #app.logger.debug("type(img) :", type(img))
+                #app.logger.debug("img.shape :", str(img.shape))
+
+                #imagenp = np.fromstring(imagestr, np.uint8)
+
+                try:
+                    analyse = DeepFace.analyze(img_path = os.path.join(app.config["IMAGE_UPLOADS"], image.filename), actions = facial_attributes)
+                    success=True
+                except ValueError as e:
+                    print(e)
+                    success=False
+
+                if success:
+                    analyse["mark"] = nt.random_notation(analyse)
+                    return jsonify(analyse)
+                else:
+                    return redirect(request.url)
+    
+    return render_template("analyse.html", title="Analyse")
